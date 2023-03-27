@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var message = ViewData["message"] as string;
+    var allAttendees = ViewData["attendees"] as IList<SignIn>;
+    #nullable disable
+}
+
+<section class="attendance">
+    <h1>Sign In</h1>
+    <partial name="_StatusMessage" model="@message" />
+    <div class="attendance-container">
+        <div class="form-img">
+            <img src="~/img/Logo.png" />
+        </div>
+        <form asp-controller="Home" asp-action="SignIn">
+            <div class="form-group">
+                <input class="form-control w-100" placeholder="Addmission Number" id="username" name="username" />
+            </div>
+            <button class="btn btn-dark w-100" type="submit">Sign In</button>
+        </form>
+    </div>
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Attendance List</h3>
+    </div>
+    <div class="card-body">
+        <div class="margin-top-50">
+            <table id="example1" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Admission No</th>
+                        <th>Fullname</th>
+                        <th>Date</th>
+                        <th>Time In</th>
+                        <th>Sign Out</th>
+                        <th>Sign Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (allAttendees != null)
+                        {
+                            foreach (var attendee in allAttendees)
+                            {
+                                <tr>
+                                    <td>@attendee.Student.UserName</td>
+                                    <td></td>
+                                    <td>@attendee.TimeIn.ToString("MMM dd, yyyy")</td>
+                                    <td>@attendee.TimeIn.ToString("hh:mm tt")</td>
+                                    <td>@attendee.IsSignOut</td>
+                                    <td>
+                                        <form asp-asp-controller="Home" asp-action="SignOut" asp-route-id="@attendee.Id">
+                                            <button class="btn btn-danger" type="submit">Sign Out</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Admission No</th>
+                        <th>Fullname</th>
+                        <th>Date</th>
+                        <th>Time In</th>
+                        <th>Sign Out</th>
+                        <th>Sign Out</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
