@@ -12,6 +12,7 @@ namespace Attendance.Areas.Identity.Data
             this.SignIn = new HashSet<SignIn>();
         }
 
+        public string Fullname { get; set; } = "Izuagbe Samuel Enakhe";
         public virtual ICollection<SignIn> SignIn { get; set; }
     }
 }

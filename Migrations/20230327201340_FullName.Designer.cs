@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Attendance.Migrations
 {
     [DbContext(typeof(AttendanceContext))]
-    [Migration("20230327184244_SignOut")]
-    partial class SignOut
+    [Migration("20230327201340_FullName")]
+    partial class FullName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,9 @@ namespace Attendance.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Fullname")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -104,6 +107,9 @@ namespace Attendance.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("TimeIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TimeOut")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

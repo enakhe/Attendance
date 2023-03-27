@@ -12,7 +12,6 @@ using System.Xml.Linq;
 using Attendance.Areas.Identity.Data;
 using Attendance.Data;
 using System.Linq;
-using Attendance.Migrations;
 
 namespace Attendance.Controllers
 {
@@ -29,18 +28,6 @@ namespace Attendance.Controllers
 
         [TempData]
         public string StatusMessage { get; set; }
-
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public IList<SignIn> allAttendees { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [Display(Name = "Username")]
-            public string Username { get; set; }
-        }
 
         public async Task<IActionResult> Index()
         {
@@ -59,16 +46,22 @@ namespace Attendance.Controllers
             {
                 StatusMessage = "Error, unable to find addmission number";
                 ViewData["message"] = StatusMessage;
-                return View("Index");
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
             {
                 SignIn signIn = new()
                 {
-                    TimeIn = DateTime.Now,
                     StudentId = user.Id
                 };
+
+                if (signIn.TimeIn > DateTime.Parse("10:00 AM"))
+                {
+                    StatusMessage = "Error, you are late. Can't receive any query";
+                    ViewData["message"] = StatusMessage;
+                    return RedirectToAction("Index");
+                }
 
                 ValueTask<EntityEntry<SignIn>> result = _db.SignIn.AddAsync(signIn);
 
@@ -77,16 +70,16 @@ namespace Attendance.Controllers
                     _ = await _db.SaveChangesAsync();
                     StatusMessage = "Successfully signed in";
                     ViewData["message"] = StatusMessage;
-                    return View("Index");
+                    return RedirectToAction("Index");
                 }
             }
             else
             {
                 StatusMessage = "Error, something unexpected happened";
                 ViewData["message"] = StatusMessage;
-                return View("Index");
+                return RedirectToAction("Index");
             }
-            return View("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -99,22 +92,15 @@ namespace Attendance.Controllers
             {
                 StatusMessage = "Error, unable to find attendance number";
                 ViewData["message"] = StatusMessage;
-                return View("Index");
-            } else if (ModelState.IsValid)
-            {
-                attendance.IsSignOut = true;
-                _db.Entry(attendance).State = EntityState.Modified;
-                _ = await _db.SaveChangesAsync();
-                StatusMessage = "Successfully signed out";
-                ViewData["message"] = StatusMessage;
-                return View("Index");
+                return RedirectToAction("Index");
             }
-            else
-            {
-                StatusMessage = "Error, something unexpected happened";
-                ViewData["message"] = StatusMessage;
-                return View("Index");
-            }
+            attendance.IsSignOut = true;
+            attendance.TimeOut = DateTime.Now;
+            _db.Entry(attendance).State = EntityState.Modified;
+            _ = await _db.SaveChangesAsync();
+            StatusMessage = "Successfully signed out";
+            ViewData["message"] = StatusMessage;
+            return RedirectToAction("Index");
         }
     }
 }

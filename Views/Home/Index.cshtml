@@ -34,7 +34,7 @@
                         <th>Fullname</th>
                         <th>Date</th>
                         <th>Time In</th>
-                        <th>Sign Out</th>
+                        <th>Time Out</th>
                         <th>Sign Out</th>
                     </tr>
                 </thead>
@@ -46,10 +46,16 @@
                             {
                                 <tr>
                                     <td>@attendee.Student.UserName</td>
-                                    <td></td>
+                                    <td>@attendee.Student.Fullname</td>
                                     <td>@attendee.TimeIn.ToString("MMM dd, yyyy")</td>
                                     <td>@attendee.TimeIn.ToString("hh:mm tt")</td>
-                                    <td>@attendee.IsSignOut</td>
+                                    @if (@attendee.IsSignOut != false)
+                                    {
+                                        <td>@attendee.TimeOut.ToString("hh:mm tt")</td>
+                                    } else
+                                    {
+                                        <td>@attendee.IsSignOut</td>
+                                    }
                                     <td>
                                         <form asp-asp-controller="Home" asp-action="SignOut" asp-route-id="@attendee.Id">
                                             <button class="btn btn-danger" type="submit">Sign Out</button>
@@ -66,7 +72,7 @@
                         <th>Fullname</th>
                         <th>Date</th>
                         <th>Time In</th>
-                        <th>Sign Out</th>
+                        <th>Time Out</th>
                         <th>Sign Out</th>
                     </tr>
                 </tfoot>
