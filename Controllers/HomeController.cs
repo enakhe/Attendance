@@ -46,7 +46,7 @@ namespace Attendance.Controllers
             {
                 StatusMessage = "Error, unable to find addmission number";
                 ViewData["message"] = StatusMessage;
-                return RedirectToAction("Index");
+                return View("Index");
             }
 
             if (ModelState.IsValid)
@@ -56,6 +56,13 @@ namespace Attendance.Controllers
                     StudentId = user.Id
                 };
 
+                if (signIn.TimeIn < DateTime.Parse("10:00 AM"))
+                {
+                    StatusMessage = "Error, you are late. Cannot receive query";
+                    ViewData["message"] = StatusMessage;
+                    return View("Index");
+                }
+
                 ValueTask<EntityEntry<SignIn>> result = _db.SignIn.AddAsync(signIn);
 
                 if (result.IsCompletedSuccessfully)
@@ -63,16 +70,16 @@ namespace Attendance.Controllers
                     _ = await _db.SaveChangesAsync();
                     StatusMessage = "Successfully signed in";
                     ViewData["message"] = StatusMessage;
-                    return RedirectToAction("Index");
+                    return View("Index");
                 }
             }
             else
             {
                 StatusMessage = "Error, something unexpected happened";
                 ViewData["message"] = StatusMessage;
-                return RedirectToAction("Index");
+                return View("Index");
             }
-            return RedirectToAction("Index");
+            return View("Index");
         }
 
         [HttpPost]
@@ -85,7 +92,7 @@ namespace Attendance.Controllers
             {
                 StatusMessage = "Error, unable to find attendance number";
                 ViewData["message"] = StatusMessage;
-                return RedirectToAction("Index");
+                return View("Index");
             }
             attendance.IsSignOut = true;
             attendance.TimeOut = DateTime.Now;
@@ -93,7 +100,7 @@ namespace Attendance.Controllers
             _ = await _db.SaveChangesAsync();
             StatusMessage = "Successfully signed out";
             ViewData["message"] = StatusMessage;
-            return RedirectToAction("Index");
+            return View("Index");
         }
     }
 }

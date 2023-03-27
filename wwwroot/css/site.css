@@ -67,3 +67,7 @@ body {
 .btn {
     border-radius: 0px !important;
 }
+
+.icon {
+    margin-right: 20px;
+}
