@@ -56,13 +56,6 @@ namespace Attendance.Controllers
                     StudentId = user.Id
                 };
 
-                if (signIn.TimeIn > DateTime.Parse("10:00 AM"))
-                {
-                    StatusMessage = "Error, you are late. Can't receive any query";
-                    ViewData["message"] = StatusMessage;
-                    return RedirectToAction("Index");
-                }
-
                 ValueTask<EntityEntry<SignIn>> result = _db.SignIn.AddAsync(signIn);
 
                 if (result.IsCompletedSuccessfully)
